@@ -12,10 +12,10 @@
     <style>
         body {
             font-family: 'M PLUS Rounded 1c', sans-serif;
+            /* 背景を水色系に変更 */
             background-color: #F0F9FF;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
-            overflow: hidden;
         }
         @keyframes shake {
             0%, 100% { transform: translateX(0); }
@@ -106,14 +106,17 @@
         };
 
         // --- Math Utils ---
-        // くり下がりのない引き算（答えが0~10の範囲）
         const generateSubtractionPool = () => {
             const pool = [];
-            // 引かれる数は0から10まで
+            // 0-0=0 から 10-10=0 までのくりさがりのない引き算
+            // 引かれる数 a は 0〜10
             for (let a = 0; a <= 10; a++) {
-                // 引く数は0からaまで（答えがマイナスにならない）
-                for (let b = 0; b <= a; b++) {
-                    pool.push({ val1: a, val2: b, answer: a - b });
+                // 引く数 b は 0〜10
+                for (let b = 0; b <= 10; b++) {
+                    // 答えが0以上になるもの（くりさがりなし）
+                    if (a - b >= 0) {
+                        pool.push({ val1: a, val2: b, answer: a - b });
+                    }
                 }
             }
             return pool;
@@ -132,11 +135,14 @@
 
         const Home = ({ onStart, onShowHistory, soundEnabled, toggleSound, dotsEnabled, toggleDots, historyCount }) => (
             <div className="flex flex-col items-center justify-center min-h-screen p-4 text-center">
+                {/* 枠線を水色に変更 */}
                 <div className="bg-white p-6 rounded-[40px] shadow-xl max-w-sm w-full border-4 border-sky-200">
+                    {/* タイトルを水色に変更し、内容を「ひきざん①」へ */}
                     <h1 className="text-3xl font-extrabold text-sky-600 mb-1">ひきざんかあど①</h1>
-                    <h2 className="text-xl font-bold text-green-500 mb-6">くりさがりのない ひきざん</h2>
-                    
+                    <h2 className="text-xl font-bold text-orange-400 mb-6">くりさがりのない ひきざん</h2>
+                     
                     <div className="space-y-3 w-full">
+                        {/* ボタンのラベルを変更 */}
                         <button onClick={() => onStart(GameMode.SEQUENTIAL_ASC)} className="w-full bg-blue-500 hover:bg-blue-600 text-white font-bold py-3.5 rounded-2xl shadow-md transition active:scale-95 text-lg">
                             じゅんばん (0-0はじまり)
                         </button>
@@ -154,6 +160,7 @@
                     <div className="mt-6 flex flex-col space-y-3">
                         <div className="flex items-center justify-between px-4">
                             <span className="text-gray-500 font-bold text-sm">サウンド</span>
+                            {/* ONの色を水色に変更 */}
                             <button onClick={toggleSound} className={`w-28 py-1.5 rounded-full font-bold text-sm transition ${soundEnabled ? 'bg-sky-500 text-white' : 'bg-gray-200 text-gray-500'}`}>
                                 {soundEnabled ? 'ON 🔊' : 'OFF 🔈'}
                             </button>
@@ -172,6 +179,7 @@
                                 <div className="text-xs text-gray-400 font-bold">これまでのきろく</div>
                                 <div className="text-sm font-bold text-gray-600">{historyCount}件 保存済み</div>
                             </div>
+                            {/* 「みる→」の色を水色に変更 */}
                             <span className="text-sky-500 font-bold text-sm group-hover:translate-x-1 transition">みる →</span>
                         </button>
                     </div>
@@ -203,14 +211,16 @@
             };
 
             return (
-                <div className="flex flex-col h-screen bg-sky-50">
+                // 背景を水色系に変更
+                <div className="flex flex-col min-h-[100svh] bg-sky-50">
                     <div className="p-4 bg-white shadow-sm flex items-center justify-between z-10">
+                        {/* 戻るボタンを水色に変更 */}
                         <button onClick={onBack} className="text-sky-600 font-bold px-3 py-1 hover:bg-sky-50 rounded-lg transition text-sm">← もどる</button>
                         <h2 className="text-lg font-black text-gray-700">きろく</h2>
                         <div className="w-16"></div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto p-4">
+                    <div className="flex-1 overflow-y-auto p-4 pb-[env(safe-area-inset-bottom)]">
                         {history.length === 0 ? (
                             <div className="h-full flex flex-col items-center justify-center text-gray-400 space-y-2">
                                 <div className="text-4xl">📭</div>
@@ -225,7 +235,7 @@
                                     <div className="col-span-2 text-center">タイム</div>
                                     <div className="col-span-2 text-center">ヒント</div>
                                 </div>
-                                
+                                 
                                 {history.map((item, index) => {
                                     const acc = calculateAccuracy(item.total, item.wrong);
                                     return (
@@ -239,6 +249,7 @@
                                                     <div className="text-xs text-gray-400">{formatDate(item.date).split(' ')[1]}</div>
                                                 </div>
                                                 <div className="col-span-2 flex justify-center items-center">
+                                                    {/* 正答率の色を水色系に */}
                                                     <div className={`font-black text-lg ${acc >= 80 ? 'text-orange-500' : 'text-sky-500'}`}>
                                                         {acc}<span className="text-[10px]">%</span>
                                                     </div>
@@ -257,6 +268,7 @@
                                                     <div className="text-[10px] text-gray-400 font-bold mb-1 mt-2">まちがえた問題:</div>
                                                     <div className="flex flex-wrap gap-1">
                                                         {item.wrongProblems.map((p, i) => (
+                                                            // 間違えた問題の表示を「-」に変更
                                                             <span key={i} className="text-xs font-bold text-red-500 bg-red-50 px-1.5 py-0.5 rounded border border-red-100">
                                                                 {p.val1}-{p.val2}
                                                             </span>
@@ -277,7 +289,7 @@
                         )}
                     </div>
                     {history.length > 0 && (
-                        <div className="p-4 bg-white border-t border-gray-100 text-center">
+                        <div className="p-4 bg-white border-t border-gray-100 text-center pb-[env(safe-area-inset-bottom)]">
                             {!confirmClear ? (
                                 <button onClick={() => setConfirmClear(true)} className="text-red-400 text-sm font-bold hover:text-red-600 transition">
                                     🗑️ すべてのきろくを消す
@@ -344,7 +356,8 @@
 
             const renderDots = (num, colorClass) => {
                 if (!dotsEnabled) return null;
-                
+                if (num === 0) return <div className="flex flex-col items-center justify-end min-h-[5rem] mb-2"></div>;
+
                 const containerClass = "flex flex-col items-center justify-end min-h-[5rem] mb-2";
                 
                 return (
@@ -359,8 +372,9 @@
             };
 
             return (
-                <div className="flex flex-col h-screen bg-sky-50">
+                <div className="p-4 pb-[env(safe-area-inset-bottom)] bg-white rounded-t-[32px] shadow-lg">
                     <div className="p-3 flex justify-between items-center bg-white shadow-sm">
+                        {/* 戻るボタンなどを水色系に */}
                         <button onClick={onBack} className="text-sky-600 font-bold px-3 py-1 hover:bg-sky-50 rounded-lg transition text-sm">← もどる</button>
                         <div className="text-sm font-bold text-sky-600">{currentIndex + 1} / {problems.length}</div>
                         <div className="text-sm font-bold flex gap-3">
@@ -369,9 +383,11 @@
                         </div>
                     </div>
                     <div className="w-full h-1 bg-gray-100">
+                        {/* 進捗バーを水色に */}
                         <div className="h-full bg-sky-400 transition-all duration-300" style={{ width: `${((currentIndex + 1) / problems.length) * 100}%` }} />
                     </div>
                     <div className="flex-1 flex items-center justify-center p-4 relative">
+                        {/* 問題カードのボーダーを水色に */}
                         <div className={`bg-white w-full max-w-sm aspect-[4/3] rounded-[32px] shadow-xl border-4 flex flex-col items-center justify-center relative transition-all duration-300 ${feedback === 'correct' ? 'border-green-400 scale-105' : feedback === 'wrong' ? 'border-red-400 shake' : 'border-sky-100'}`}>
                             
                             <div className="flex items-end justify-center gap-2 md:gap-4 pb-4">
@@ -381,10 +397,12 @@
                                 </div>
                                 
                                 <div className="flex flex-col items-center justify-end pb-2 md:pb-4">
+                                    {/* 計算記号を「-」に、色を水色に */}
                                     <div className="text-4xl md:text-6xl font-black text-sky-400 px-2">-</div>
                                 </div>
                                 
                                 <div className="flex flex-col items-center">
+                                    {/* 右側のドットの色を水色に */}
                                     {renderDots(currentProblem.val2, 'text-sky-400')}
                                     <div className="text-6xl md:text-8xl font-black text-gray-800 leading-none">{currentProblem.val2}</div>
                                 </div>
@@ -393,36 +411,21 @@
                             {feedback && <div className={`absolute inset-0 flex items-center justify-center pointer-events-none opacity-20 text-[12rem] ${feedback === 'correct' ? 'text-green-400' : 'text-red-400'}`}>{feedback === 'correct' ? '〇' : '×'}</div>}
                         </div>
                     </div>
-                    
-                    {/* Input Area */}
                     <div className="p-4 pb-8 bg-white rounded-t-[32px] shadow-lg">
-                        <div className="flex flex-col gap-3 max-w-lg mx-auto">
-                            {/* 1段目: 0-5 */}
-                            <div className="flex justify-center gap-2">
-                                {[0, 1, 2, 3, 4, 5].map(num => (
-                                    <button 
-                                        key={num} 
-                                        onClick={() => handleAnswer(num)} 
-                                        disabled={isAnimating} 
-                                        className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-2xl font-bold rounded-xl shadow-sm bg-orange-50 text-orange-600 active:scale-90 transition border border-orange-100"
-                                    >
-                                        {num}
-                                    </button>
-                                ))}
-                            </div>
-                            {/* 2段目: 6-10 (中央揃え) */}
-                            <div className="flex justify-center gap-2">
-                                {[6, 7, 8, 9, 10].map(num => (
-                                    <button 
-                                        key={num} 
-                                        onClick={() => handleAnswer(num)} 
-                                        disabled={isAnimating} 
-                                        className="w-12 h-12 md:w-16 md:h-16 flex items-center justify-center text-2xl font-bold rounded-xl shadow-sm bg-orange-50 text-orange-600 active:scale-90 transition border border-orange-100"
-                                    >
-                                        {num}
-                                    </button>
-                                ))}
-                            </div>
+                        {/* 0〜10のボタンレイアウト（2段） */}
+                        <div className="grid grid-cols-6 gap-2 max-w-sm mx-auto">
+                            {[0, 1, 2, 3, 4, 5].map(num => (
+                                <button key={num} onClick={() => handleAnswer(num)} disabled={isAnimating} className="w-full aspect-square flex items-center justify-center text-xl font-bold rounded-xl shadow-sm bg-orange-50 text-orange-600 active:scale-90 transition">
+                                    {num}
+                                </button>
+                            ))}
+                        </div>
+                        <div className="grid grid-cols-5 gap-2 max-w-sm mx-auto mt-2">
+                             {[6, 7, 8, 9, 10].map(num => (
+                                <button key={num} onClick={() => handleAnswer(num)} disabled={isAnimating} className="w-full aspect-square flex items-center justify-center text-xl font-bold rounded-xl shadow-sm bg-orange-50 text-orange-600 active:scale-90 transition">
+                                    {num}
+                                </button>
+                            ))}
                         </div>
                     </div>
                 </div>
@@ -435,15 +438,17 @@
             const timeStr = `${Math.floor(timeMs / 60000) > 0 ? Math.floor(timeMs / 60000) + '分' : ''}${Math.floor((timeMs % 60000) / 1000)}秒`;
 
             return (
-                <div className="flex flex-col items-center justify-start min-h-screen bg-sky-50 p-4 overflow-y-auto">
-                    <div className="bg-white p-6 rounded-[32px] shadow-xl max-w-sm w-full border-4 border-yellow-300 relative my-4">
+                // 背景を水色系に
+                <div className="flex flex-col items-center justify-start min-h-[100svh] bg-sky-50 p-4 overflow-y-auto">
+                    {/* 枠線を水色系に */}
+                    <div className="bg-white p-6 rounded-[32px] shadow-xl max-w-sm w-full border-4 border-sky-300 relative my-4">
                         <h2 className="text-xl font-black text-gray-700 mb-4 text-center">けっか</h2>
                         <div className="flex flex-col items-center mb-4">
                             <div className="text-6xl mb-1 animate-bounce">{accuracy === 100 ? '💮' : accuracy >= 80 ? '🎉' : '👍'}</div>
                             <p className="text-lg font-black text-orange-500">{accuracy === 100 ? 'たいへんよくできました！' : 'がんばったね！'}</p>
                         </div>
                         <div className="space-y-2 mb-6 bg-gray-50 p-4 rounded-2xl text-sm font-bold">
-                            <div className="flex justify-between border-b pb-1"><span>タイム</span><span className="text-sky-600">{timeStr}</span></div>
+                            <div className="flex justify-between border-b pb-1"><span>タイム</span><span className="text-blue-600">{timeStr}</span></div>
                             <div className="flex justify-between border-b pb-1 pt-1"><span>正解スコア</span><span className="text-xl text-orange-500">{finalScore} / {total}</span></div>
                             <div className="flex justify-between text-xs text-gray-400"><span>まちがい: {wrong}回</span><span>正答率: {accuracy}%</span></div>
                         </div>
@@ -451,6 +456,7 @@
                             <div className="mb-6">
                                 <h3 className="text-xs font-bold text-gray-400 mb-2 border-b">📝 まちがえた もんだい</h3>
                                 <div className="flex flex-wrap gap-1.5 max-h-24 overflow-y-auto pr-1">
+                                    {/* 間違えた問題の表示を「-」に */}
                                     {wrongProblems.map((p, i) => <div key={i} className="bg-red-50 text-red-600 px-2 py-0.5 rounded text-xs font-bold">{p.val1}-{p.val2}</div>)}
                                 </div>
                             </div>
@@ -459,6 +465,7 @@
                             <button onClick={onShowHistory} className="w-full bg-orange-100 text-orange-600 py-3 rounded-2xl font-bold hover:bg-orange-200 transition">
                                 📋 きろくをみる
                             </button>
+                            {/* メニューに戻るボタンを水色に */}
                             <button onClick={onRestart} className="w-full bg-sky-500 text-white py-4 rounded-2xl shadow-md text-xl font-black active:scale-95 transition">
                                 メニューにもどる
                             </button>
@@ -478,28 +485,31 @@
             const [history, setHistory] = useState([]);
             const [lastResult, setLastResult] = useState(null);
 
+            // 保存キーを「ひきざん1」用に変更
+            const STORAGE_KEY = 'math_subtraction_no_carry_history_v1';
+
             useEffect(() => {
-                // 保存キーを①用に変更
-                const saved = localStorage.getItem('math_history_sub1_v1');
+                const saved = localStorage.getItem(STORAGE_KEY);
                 if (saved) setHistory(JSON.parse(saved));
             }, []);
 
             const updateHistory = (newHistory) => {
                 setHistory(newHistory);
-                localStorage.setItem('math_history_sub1_v1', JSON.stringify(newHistory));
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(newHistory));
             };
 
             const startGame = (selectedMode) => {
+                // 引き算の問題プールを生成
                 const pool = generateSubtractionPool();
                 let selected = [];
                 let modeLabel = '';
                 
                 if (selectedMode === GameMode.SEQUENTIAL_ASC) {
-                    // 0-0, 1-0, 1-1, ... の順に並べる
+                    // 引かれる数(val1)が小さい順、同じなら引く数(val2)が小さい順
                     selected = [...pool].sort((a,b) => a.val1 !== b.val1 ? a.val1 - b.val1 : a.val2 - b.val2);
                     modeLabel = 'じゅんばん';
                 } else if (selectedMode === GameMode.SEQUENTIAL_DESC) {
-                    // 10-10, 10-9, ... の順に並べる
+                    // 引かれる数(val1)が大きい順、同じなら引く数(val2)が大きい順
                     selected = [...pool].sort((a,b) => a.val1 !== b.val1 ? b.val1 - a.val1 : b.val2 - a.val2);
                     modeLabel = 'ぎゃくじゅん';
                 } else {
@@ -530,7 +540,8 @@
             };
 
             return (
-                <div className="h-screen w-screen bg-sky-50 font-sans select-none overflow-hidden text-gray-800">
+                // 全体の背景色を水色系に統一
+                <div className="min-h-[100svh] w-screen bg-sky-50 font-sans select-none text-gray-800">
                     {screen === 'HOME' && (
                         <Home 
                             onStart={startGame} 
